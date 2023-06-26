@@ -1,84 +1,76 @@
 {
-  "Scheduled": [
-    {
-      "displayName": "AlertRule01",
-      "description": "",
-      "severity": "Medium",
-      "enabled": true,
-      "query": "SecurityEvent | where EventID == \"4688\" | where CommandLine contains \"-noni -ep bypass $\"",
-      "queryFrequency": "4H",
-      "queryPeriod": "6H",
-      "triggerOperator": "GreaterThan",
-      "triggerThreshold": 5,
-      "suppressionDuration": "6H",
-      "suppressionEnabled": false,
-      "tactics": [
-        "Persistence",
-        "LateralMovement",
-        "Collection"
-      ],
-      "playbookName": "",
-      "aggregationKind": "SingleAlert",
-      "createIncident": true,
-      "groupingConfiguration": {
-        "enabled": false,
-        "reopenClosedIncident": false,
-        "lookbackDuration": "PT5H",
-        "entitiesMatchingMethod": "All",
-        "groupByEntities": [
-          "Account",
-          "Ip",
-          "Host",
-          "Url"
-        ]
-      }
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workspace": {
+            "type": "String"
+        }
     },
-    {
-      "displayName": "AlertRule02",
-      "description": "",
-      "severity": "Medium",
-      "enabled": true,
-      "query": "SecurityEvent | where EventID == \"4688\" | where CommandLine contains \"-noni -ep bypass $\"",
-      "queryFrequency": "5H",
-      "queryPeriod": "5H",
-      "triggerOperator": "GreaterThan",
-      "triggerThreshold": 5,
-      "suppressionDuration": "6H",
-      "suppressionEnabled": false,
-      "tactics": [
-        "Persistence",
-        "LateralMovement",
-        "Collection"
-      ],
-      "playbookName": ""
-    }
-  ],
-  "Fusion": [
-    {
-      "displayName": "Advanced Multistage Attack Detection",
-      "enabled": true,
-      "alertRuleTemplateName": "f71aba3d-28fb-450b-b192-4e76a83015c8"
-    }
-  ],
-  "MLBehaviorAnalytics": [
-    {
-      "displayName": "(Preview) Anomalous SSH Login Detection",
-      "enabled": true,
-      "alertRuleTemplateName": "fa118b98-de46-4e94-87f9-8e6d5060b60b"
-    }
-  ],
-  "MicrosoftSecurityIncidentCreation": [
-    {
-      "displayName": "Create incidents based on Azure Active Directory Identity Protection alerts",
-      "description": "Create incidents based on all alerts generated in Azure Active Directory Identity Protection",
-      "enabled": true,
-      "productFilter": "Azure Active Directory Identity Protection",
-      "severitiesFilter": [
-        "High",
-        "Medium",
-        "Low"
-      ],
-      "displayNamesFilter": null
-    }
-  ]
+    "resources": [
+        {
+            "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspace'), 'Microsoft.SecurityInsights'),'/alertRules/949a8486-e8d1-469c-8615-62ef51c3c666')]",
+            "name": "Analytics01",
+            "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+            "kind": "Scheduled",
+            "apiVersion": "2022-11-01-preview",
+            "properties": {
+                "displayName": "found local1.info message",
+                "description": "",
+                "severity": "Medium",
+                "enabled": true,
+                "query": "Syslog\r\n| where SyslogMessage contains \"someone is here\"",
+                "queryFrequency": "PT5M",
+                "queryPeriod": "PT1H",
+                "triggerOperator": "GreaterThan",
+                "triggerThreshold": 0,
+                "suppressionDuration": "PT5H",
+                "suppressionEnabled": true,
+                "startTimeUtc": null,
+                "tactics": [
+                    "Persistence"
+                ],
+                "techniques": [],
+                "alertRuleTemplateName": null,
+                "incidentConfiguration": {
+                    "createIncident": true,
+                    "groupingConfiguration": {
+                        "enabled": true,
+                        "reopenClosedIncident": false,
+                        "lookbackDuration": "PT5H",
+                        "matchingMethod": "AllEntities",
+                        "groupByEntities": [],
+                        "groupByAlertDetails": [],
+                        "groupByCustomDetails": []
+                    }
+                },
+                "eventGroupingSettings": {
+                    "aggregationKind": "SingleAlert"
+                },
+                "alertDetailsOverride": null,
+                "customDetails": null,
+                "entityMappings": [
+                    {
+                        "entityType": "Host",
+                        "fieldMappings": [
+                            {
+                                "identifier": "HostName",
+                                "columnName": "HostName"
+                            }
+                        ]
+                    },
+                    {
+                        "entityType": "IP",
+                        "fieldMappings": [
+                            {
+                                "identifier": "Address",
+                                "columnName": "HostIP"
+                            }
+                        ]
+                    }
+                ],
+                "sentinelEntitiesMappings": null,
+                "templateVersion": null
+            }
+        }
+    ]
 }
